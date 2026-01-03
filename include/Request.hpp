@@ -1,3 +1,6 @@
+#ifndef REQUEST_HPP
+#define REQUEST_HPP
+
 #include<iostream>
 #include <string>
 using namespace std;
@@ -8,3 +11,5 @@ struct Request {
     int processTime;
     char jobType;
 };
+
+#endif

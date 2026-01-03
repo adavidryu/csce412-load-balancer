@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Request.hpp"
 #include "Firewall.hpp"
+#include "WebServer.hpp"
 
 using namespace std;
 
@@ -31,6 +32,32 @@ int main() {
          << (firewall.isBlocked(testIP1) ? "BLOCKED" : "ALLOWED") << endl;
     cout << "IP " << testIP2 << " is " 
          << (firewall.isBlocked(testIP2) ? "BLOCKED" : "ALLOWED") << endl;
+
+    // WebServer checkpoint test: Create a WebServer, assign a request with time=3, tick 3 times, confirm it becomes idle.
+    cout << "Testing WebServer:" << endl;
+    WebServer ws;
+    
+    // Create a request with processTime=3
+    Request testReq;
+    testReq.ipIn = "192.168.1.10";
+    testReq.ipOut = "10.0.0.2";
+    testReq.processTime = 3;
+    testReq.jobType = 'B';
+    
+    cout << "Initial state - Server available: " << (ws.requestOK() ? "YES" : "NO") << endl;
+    
+    // Assign the request
+    ws.assignRequest(testReq);
+    cout << "After assigning request (time=3) - Server available: " << (ws.requestOK() ? "YES" : "NO") << endl;
+    
+    // Tick 3 times
+    for (int i = 1; i <= 3; i++) {
+        ws.advanceClock();
+        cout << "After tick " << i << " - Server available: " << (ws.requestOK() ? "YES" : "NO") << endl;
+    }
+    
+    cout << "Final state - Server idle: " << (ws.requestOK() ? "YES" : "NO") << endl;
+    cout << endl;
     
     return 0;
 }
