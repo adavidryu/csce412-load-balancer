@@ -1,3 +1,8 @@
+/**
+ * @file RandomUtil.cpp
+ * @brief Implementation of utility functions for random number generation
+ */
+
 #include "RandomUtil.hpp"
 #include <random>
 #include <sstream>

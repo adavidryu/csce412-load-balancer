@@ -1,3 +1,8 @@
+/**
+ * @file WebServer.cpp
+ * @brief Implementation of the WebServer structure for processing requests
+ */
+
 #include "WebServer.hpp"
 
 WebServer::WebServer() {

@@ -1,3 +1,8 @@
+/**
+ * @file Firewall.cpp
+ * @brief Implementation of the Firewall class for IP address blocking
+ */
+
 #include "Firewall.hpp"
 #include <fstream>
 #include <sstream>

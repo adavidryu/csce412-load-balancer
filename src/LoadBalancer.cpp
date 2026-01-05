@@ -1,3 +1,8 @@
+/**
+ * @file LoadBalancer.cpp
+ * @brief Implementation of the LoadBalancer structure for managing requests and servers
+ */
+
 #include "LoadBalancer.hpp"
 #include "RandomUtil.hpp"
 #include <iostream>
