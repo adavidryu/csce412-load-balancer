@@ -15,7 +15,8 @@ $(SRCDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(OBJECTS) $(TARGET) null.o
+	rm -f $(SRCDIR)/*.o
 
 run: $(TARGET)
 	./$(TARGET)

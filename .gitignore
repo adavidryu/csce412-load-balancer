@@ -1,0 +1,33 @@
+# Compiled Object files
+*.o
+*.obj
+
+# Executables
+load_balancer
+*.exe
+*.out
+
+# Build directories
+build/
+bin/
+
+# Log files (keep required deliverable)
+logs/*.log
+!logs/run_10servers_10000cycles.log
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*~
+

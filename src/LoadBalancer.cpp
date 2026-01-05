@@ -105,13 +105,7 @@ void LoadBalancer::scalingCheckAndApplyIfCooldownPassed() {
     }
 }
 
-void LoadBalancer::logTick() {
-    int queueSize = q.size();
-    int numServers = ws.size();
-    int busyServers = 0;
-    int totalCompleted = 0;
-    
-    // Count job types in queue
+void LoadBalancer::updateJobTypeCounts() {
     streamingInQueue = 0;
     processingInQueue = 0;
     std::queue<Request> tempQueue = q;
@@ -123,6 +117,14 @@ void LoadBalancer::logTick() {
         }
         tempQueue.pop();
     }
+}
+
+void LoadBalancer::logTick() {
+    updateJobTypeCounts();
+    int queueSize = q.size();
+    int numServers = ws.size();
+    int busyServers = 0;
+    int totalCompleted = 0;
     
     for (auto& server : ws) {
         if (!server.requestOK()) {

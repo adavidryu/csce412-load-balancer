@@ -24,6 +24,7 @@ struct LoadBalancer {
         int streamingInQueue;
         int processingInQueue;
         
+        void updateJobTypeCounts();
         void generateInitialQueue(int numServers);
         void maybeGenerateNewRequestsEachTick();
         void dispatchRequestsToIdleServers();
