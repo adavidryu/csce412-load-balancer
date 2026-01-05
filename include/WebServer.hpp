@@ -16,6 +16,7 @@ struct WebServer {
         void assignRequest(Request request);
         void advanceClock();
         void isRequestComplete();
+        int getCompletedRequests() const;
 };
 
 #endif

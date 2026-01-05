@@ -30,3 +30,7 @@ void WebServer::isRequestComplete() {
         currentRequest = Request();
     }
 }
+
+int WebServer::getCompletedRequests() const {
+    return numCompletedRequests;
+}

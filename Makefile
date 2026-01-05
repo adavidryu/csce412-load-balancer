@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Iinclude
 SRCDIR = src
 INCLUDEDIR = include
-SOURCES = $(SRCDIR)/main.cpp $(SRCDIR)/Firewall.cpp $(SRCDIR)/WebServer.cpp
+SOURCES = $(SRCDIR)/main.cpp $(SRCDIR)/Firewall.cpp $(SRCDIR)/WebServer.cpp $(SRCDIR)/LoadBalancer.cpp $(SRCDIR)/RandomUtil.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 TARGET = load_balancer
 
