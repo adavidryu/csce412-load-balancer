@@ -32,7 +32,7 @@ char RandomUtil::randomJobType() {
 
 bool RandomUtil::shouldGenerateArrival() {
     std::uniform_int_distribution<> dis(0, 99);
-    return dis(gen) < 30;
+    return dis(gen) < 30;  // 30% chance per tick - original rate to keep queue active
 }
 
 int RandomUtil::randomInt(int min, int max) {

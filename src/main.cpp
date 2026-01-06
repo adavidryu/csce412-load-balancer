@@ -30,7 +30,7 @@ int main() {
     cout << "Enter number of clock cycles: ";
     cin >> totalCycles;
     
-    string logFilename = "logs/simulation.log";
+    string logFilename = "logs/Log.txt";
     LoadBalancer lb(numServers, logFilename);
     
     lb.run(totalCycles);

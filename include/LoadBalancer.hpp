@@ -39,6 +39,10 @@ struct LoadBalancer {
         std::string scaleMessage;
         int streamingInQueue;
         int processingInQueue;
+        int initialQueueSize;
+        int initialServerCount;
+        std::vector<int> serversAddedTicks;
+        std::vector<int> serversRemovedTicks;
         
         void updateJobTypeCounts();
         void generateInitialQueue(int numServers);
@@ -53,9 +57,9 @@ struct LoadBalancer {
          * @brief Constructor that initializes the load balancer
          * @param initialServerCount Number of web servers to start with
          * @param logFilename Path to the log file (default: "logs/simulation.log")
-         * @param cooldownValue Number of ticks to wait between scaling operations (default: 10)
+         * @param cooldownValue Number of ticks to wait between scaling operations (default: 600)
          */
-        LoadBalancer(int initialServerCount, const std::string& logFilename = "logs/simulation.log", int cooldownValue = 10);
+        LoadBalancer(int initialServerCount, const std::string& logFilename = "logs/simulation.log", int cooldownValue = 600);
         
         /**
          * @brief Runs the load balancer simulation

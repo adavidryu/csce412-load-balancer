@@ -12,7 +12,7 @@ static int nextRequestId = 1;
 LoadBalancer::LoadBalancer(int initialServerCount, const std::string& logFilename, int cooldownValue) 
     : currentTick(0), cooldown(cooldownValue), lastScaleTick(-cooldown), firewall(), 
       requestsAddedThisTick(0), requestsBlockedThisTick(0), scaleMessage(""),
-      streamingInQueue(0), processingInQueue(0) {
+      streamingInQueue(0), processingInQueue(0), initialQueueSize(0), initialServerCount(initialServerCount) {
     
     ws.resize(initialServerCount);
     
@@ -22,6 +22,7 @@ LoadBalancer::LoadBalancer(int initialServerCount, const std::string& logFilenam
     }
     
     generateInitialQueue(initialServerCount);
+    initialQueueSize = q.size();
 }
 
 void LoadBalancer::generateInitialQueue(int numServers) {
@@ -41,7 +42,7 @@ void LoadBalancer::maybeGenerateNewRequestsEachTick() {
     requestsBlockedThisTick = 0;
     
     if (RandomUtil::shouldGenerateArrival()) {
-        int numNew = RandomUtil::randomInt(1, 3);
+        int numNew = RandomUtil::randomInt(1, 3);  // 1-3 requests per arrival
         
         for (int i = 0; i < numNew; i++) {
             Request req = RandomUtil::randomRequest();
@@ -90,12 +91,13 @@ void LoadBalancer::scalingCheckAndApplyIfCooldownPassed() {
     
     int queueSize = q.size();
     int numServers = ws.size();
-    int thresholdHigh = 25 * numServers;
-    int thresholdLow = 15 * numServers;
+    int thresholdHigh = 25 * numServers;  // Adjusted threshold
+    int thresholdLow = 15 * numServers;   // Adjusted threshold
     
     if (queueSize > thresholdHigh) {
         ws.push_back(WebServer());
         lastScaleTick = currentTick;
+        serversAddedTicks.push_back(currentTick);
         scaleMessage = " [SCALE UP to " + std::to_string(ws.size()) + " servers]";
     }
     else if (queueSize < thresholdLow && numServers > 1) {
@@ -103,6 +105,7 @@ void LoadBalancer::scalingCheckAndApplyIfCooldownPassed() {
             if (ws[i].requestOK()) {
                 ws.erase(ws.begin() + i);
                 lastScaleTick = currentTick;
+                serversRemovedTicks.push_back(currentTick);
                 scaleMessage = " [SCALE DOWN to " + std::to_string(ws.size()) + " servers]";
                 break;
             }
@@ -161,6 +164,8 @@ void LoadBalancer::logTick() {
 void LoadBalancer::run(int totalCycles) {
     logStream << "=== Load Balancer Simulation Started ===" << std::endl;
     logStream << "Initial servers: " << ws.size() << std::endl;
+    logStream << "Starting queue size: " << initialQueueSize << std::endl;
+    logStream << "Task time range: 1-10 clock cycles" << std::endl;
     logStream << "Cooldown: " << cooldown << " ticks" << std::endl;
     logStream << "Total cycles: " << totalCycles << std::endl;
     logStream << "=========================================" << std::endl;
@@ -174,13 +179,25 @@ void LoadBalancer::run(int totalCycles) {
         logTick();
     }
     
-    int totalCompleted = 0;
-    for (auto& server : ws) {
-        totalCompleted += server.getCompletedRequests();
-    }
+    int finalQueueSize = q.size();
     
     logStream << "=== Load Balancer Simulation Completed ===" << std::endl;
     logStream << "Final servers: " << ws.size() << std::endl;
-    logStream << "Total completed requests: " << totalCompleted << std::endl;
+    logStream << "Ending queue size: " << finalQueueSize << std::endl;
+    
+    logStream << "\n=== Scaling Summary ===" << std::endl;
+    int netServersChange = ws.size() - initialServerCount;
+    logStream << "Initial servers: " << initialServerCount << std::endl;
+    logStream << "Final servers: " << ws.size() << std::endl;
+    if (netServersChange > 0) {
+        logStream << "Net servers added: " << netServersChange << std::endl;
+    } else if (netServersChange < 0) {
+        logStream << "Net servers removed: " << -netServersChange << std::endl;
+    } else {
+        logStream << "Net server change: 0 (no change)" << std::endl;
+    }
+    logStream << "Total scaling events: " << (serversAddedTicks.size() + serversRemovedTicks.size()) 
+              << " (" << serversAddedTicks.size() << " additions, " << serversRemovedTicks.size() << " removals)" << std::endl;
+    
     logStream.close();
 }
